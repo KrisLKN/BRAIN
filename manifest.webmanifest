@@ -1,0 +1,35 @@
+{
+  "id": "second-cerveau-os",
+  "name": "🧠 Second Cerveau OS",
+  "short_name": "Cerveau OS",
+  "description": "Votre second cerveau ultime : journal, tâches, habitudes, santé, objectifs, calendrier, fichiers, ressources, humeur, météo et IA.",
+  "lang": "fr",
+  "dir": "ltr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["standalone", "fullscreen", "minimal-ui"],
+  "orientation": "portrait-primary",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "categories": ["productivity", "health", "lifestyle", "education", "utilities"],
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-192-maskable.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "icons/icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "🏠 Dashboard", "short_name": "Dashboard", "url": "./#dashboard" },
+    { "name": "📓 Journal", "short_name": "Journal", "url": "./#journal" },
+    { "name": "✅ Tâches", "short_name": "Tâches", "url": "./#tasks" },
+    { "name": "🔥 Habitudes", "short_name": "Habitudes", "url": "./#habits" },
+    { "name": "📊 Santé", "short_name": "Santé", "url": "./#metrics" },
+    { "name": "🎯 Objectifs", "short_name": "Objectifs", "url": "./#goals" },
+    { "name": "🤖 IA", "short_name": "IA", "url": "./#assistant" }
+  ],
+  "screenshots": [
+    { "src": "icons/screenshot-1.png", "sizes": "1080x1920", "type": "image/png", "label": "Vue d'ensemble" },
+    { "src": "icons/screenshot-2.png", "sizes": "1080x1920", "type": "image/png", "label": "Gestion des tâches" }
+  ]
+}
