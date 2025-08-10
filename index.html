@@ -2,42 +2,41 @@
 <html lang="fr">
 <head>
   <!-- META & PWA -->
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)">
-  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
-  <meta name="description" content="Second Cerveau OS -- productivité, santé, IA, objectifs, calendrier, fichiers, connaissances, humeur, météo et plus.">
-
-  <link rel="manifest" href="manifest.webmanifest">
-  <link rel="apple-touch-icon" href="icons/icon-192.png">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="description" content="Second Cerveau OS — productivité, santé, IA, objectifs, calendrier, fichiers, connaissances, humeur, météo et plus." />
+  <meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#ffffff"  media="(prefers-color-scheme: light)" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
   <title>🧠 Second Cerveau OS</title>
 
   <!-- Styles -->
-  <link rel="preload" href="styles.css" as="style">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="preload" href="styles.css" as="style" />
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-<div class="app-wrapper" id="app">
+<div id="app" class="app-wrapper">
 
-  <!-- Splash / Login -->
+  <!-- SPLASH / LOGIN -->
   <div id="splash-screen" role="dialog" aria-label="Écran de démarrage">
     <div class="splash-card glass">
       <div class="logo">🧠</div>
       <h1>Second Cerveau OS</h1>
-      <p>Chargement de votre univers…</p>
+      <p>Chargement de ton univers…</p>
       <div class="login-card">
-        <input id="userName" placeholder="Votre nom" aria-label="Nom d'utilisateur">
+        <input id="userName" placeholder="Ton nom" aria-label="Nom d'utilisateur" />
         <button id="loginBtn" class="btn primary">Entrer</button>
       </div>
+      <small class="muted">Ton nom est stocké localement (aucun cloud).</small>
     </div>
   </div>
 
-  <!-- Barre du haut -->
+  <!-- HEADER -->
   <header class="app-header glass">
     <div class="profile">
-      <img src="icons/user.png" alt="Profil" id="profilePic">
+      <img id="profilePic" src="icons/user.png" alt="Photo de profil" />
       <div class="profile-meta">
         <span id="profileName">Utilisateur</span>
         <small id="profileTagline">Crée ta meilleure version</small>
@@ -45,77 +44,204 @@
     </div>
     <div class="header-actions">
       <button id="themeToggle" class="icon" title="Thème">🌗</button>
-      <button id="backupBtn" class="icon" title="Exporter">⤴︎</button>
+      <button id="backupBtn" class="icon" title="Exporter toutes les données">⤴︎</button>
       <button id="settingsBtn" class="icon" data-tab="settings" title="Réglages">⚙️</button>
     </div>
   </header>
 
-  <!-- Contenu principal -->
+  <!-- CONTENU -->
   <main class="tab-container">
+
     <!-- DASHBOARD -->
-    <section id="dashboard" class="tab active" aria-label="Vue d'ensemble">
+    <section id="dashboard" class="tab active" aria-label="Vue d’ensemble">
       <h2 class="section-title">Vue d’ensemble</h2>
+
+      <!-- Bandeaux rapides -->
+      <div class="row wrap">
+        <div class="chip">📅 Aujourd’hui : <b id="todayLabel"></b></div>
+        <div class="chip">⏱️ Focus : <b id="focusMini">00:00</b></div>
+        <div class="chip">⚡ Streak : <b id="streakCounter">0</b></div>
+        <div class="chip">🔔 Rappels : <b id="reminderCount">0</b></div>
+      </div>
+
+      <!-- Widgets -->
       <div class="widget-grid">
-        <!-- Productivité -->
-        <article class="widget glass" id="w-lastNote"><h3>📓 Dernière note</h3><p>--</p></article>
-        <article class="widget glass" id="w-tasks"><h3>✅ Tâches</h3><p>0 à faire</p></article>
-        <article class="widget glass" id="w-habits"><h3>🔥 Habitudes</h3><p>0 complétées</p></article>
-        <article class="widget glass" id="w-focus"><h3>⏳ Focus</h3><p>00:00</p></article>
-
-        <!-- Santé & bien-être -->
-        <article class="widget glass span-2" id="w-health">
-          <h3>📊 Santé</h3>
-          <canvas id="healthChart" height="130" aria-label="Graphique santé"></canvas>
+        <article class="widget glass interactive" id="w-lastNote">
+          <header><h3>📓 Dernière note</h3><button class="mini" data-open="journal">Ouvrir</button></header>
+          <p class="truncate">—</p>
         </article>
-        <article class="widget glass" id="w-nutrition"><h3>🥗 Nutrition</h3><p>-- kcal</p></article>
-        <article class="widget glass" id="w-hydration"><h3>💧 Hydratation</h3><p>0 verres</p></article>
 
-        <!-- Motivation & humeur -->
-        <article class="widget glass" id="w-goal"><h3>🎯 Objectif</h3><p>--</p></article>
-        <article class="widget glass" id="w-mood"><h3>😊 Humeur</h3><p>--</p></article>
-        <article class="widget glass" id="w-quote"><h3>💬 Citation</h3><p>--</p></article>
+        <article class="widget glass interactive" id="w-tasks">
+          <header><h3>✅ Tâches</h3><div class="mini-row"><span class="mini pill" id="taskQuickAdd">+ Rapide</span><button class="mini" data-open="tasks">Voir</button></div></header>
+          <p><b id="tasksOpen">0</b> à faire • <span id="tasksToday">0</span> aujourd’hui</p>
+          <div class="progress"><div id="tasksProgress" style="width:0%"></div></div>
+        </article>
 
-        <!-- Contexte & infos -->
-        <article class="widget glass" id="w-weather"><h3>☀️ Météo</h3><p>--</p></article>
-        <article class="widget glass" id="w-news"><h3>📰 Actus</h3><p>--</p></article>
-        <article class="widget glass" id="w-finance"><h3>💹 Finance</h3><p>--</p></article>
+        <article class="widget glass interactive" id="w-habits">
+          <header><h3>🔥 Habitudes</h3><button class="mini" data-open="habits">Voir</button></header>
+          <p><b id="habitsDoneToday">0</b> complétées aujourd’hui</p>
+        </article>
+
+        <article class="widget glass" id="w-focus">
+          <header><h3>⏳ Focus</h3><button class="mini" data-open="focus">Lancer</button></header>
+          <p>Dernière session : <span id="lastFocus">—</span></p>
+        </article>
+
+        <article class="widget glass span-2" id="w-health">
+          <header><h3>📊 Santé</h3><div class="mini pill">Pas / Poids / Sommeil</div></header>
+          <canvas id="healthChart" height="150" aria-label="Graphique santé"></canvas>
+        </article>
+
+        <article class="widget glass" id="w-nutrition">
+          <header><h3>🥗 Nutrition</h3><button class="mini" data-open="nutrition">Ajouter</button></header>
+          <p>Aujourd’hui : <b id="kcalToday">0</b> kcal</p>
+        </article>
+
+        <article class="widget glass" id="w-hydration">
+          <header><h3>💧 Hydratation</h3><button class="mini" id="waterPlus">+1 verre</button></header>
+          <p><b id="waterCount">0</b> verres</p>
+        </article>
+
+        <article class="widget glass" id="w-goal">
+          <header><h3>🎯 Objectif clé</h3><button class="mini" data-open="goals">Gérer</button></header>
+          <p id="mainGoal">—</p>
+          <div class="progress"><div id="goalProgress" style="width:0%"></div></div>
+        </article>
+
+        <article class="widget glass" id="w-mood">
+          <header><h3>😊 Humeur</h3><button class="mini" data-open="mood">Saisir</button></header>
+          <p id="moodNow">—</p>
+        </article>
+
+        <article class="widget glass" id="w-quote">
+          <header><h3>💬 Citation</h3><button class="mini" id="refreshQuote">↻</button></header>
+          <p id="quoteTxt">—</p>
+        </article>
+
+        <article class="widget glass" id="w-weather">
+          <header><h3>☀️ Météo</h3><button class="mini" id="refreshWeather">↻</button></header>
+          <p id="weatherNow">—</p>
+        </article>
+
+        <article class="widget glass" id="w-news">
+          <header><h3>📰 Actus</h3><button class="mini" data-open="resources">Sources</button></header>
+          <ul id="newsList" class="mini-list"></ul>
+        </article>
+
+        <article class="widget glass" id="w-finance">
+          <header><h3>💹 Finance</h3><button class="mini" id="refreshFinance">↻</button></header>
+          <p id="financeNow">—</p>
+        </article>
+      </div>
+
+      <!-- Raccourcis -->
+      <div class="quick-actions glass">
+        <button class="btn" data-open="journal">+ Note</button>
+        <button class="btn" data-open="tasks">+ Tâche</button>
+        <button class="btn" data-open="habits">+ Habitude</button>
+        <button class="btn" data-open="focus">▶︎ Focus</button>
+        <button class="btn" data-open="nutrition">+ Repas</button>
+        <button class="btn" data-open="mood">😊 Humeur</button>
       </div>
     </section>
 
-    <!-- JOURNAL -->
+    <!-- JOURNAL (détaillé) -->
     <section id="journal" class="tab" aria-label="Journal">
       <h2 class="section-title">Journal</h2>
+
       <div class="card glass">
         <form id="journalForm" class="stack">
+          <div class="row wrap">
+            <input id="journalTitle" placeholder="Titre" />
+            <input id="journalTags"  placeholder="#tags (séparés par espace)" />
+            <input id="journalDate"  type="date" />
+          </div>
           <textarea id="journalText" placeholder="Note rapide, idée, souvenir…"></textarea>
-          <div class="row">
+          <div class="row wrap">
             <button class="btn primary">Ajouter</button>
             <button type="button" id="journalVoice" class="btn">🎙️ Dictée</button>
             <button type="button" id="journalImport" class="btn">⬇︎ Import</button>
+            <button type="button" id="journalExport" class="btn">⬆︎ Export .md</button>
+            <input id="journalSearch" placeholder="Rechercher…" />
+            <select id="journalFilter">
+              <option value="">Tout</option><option value="today">Aujourd’hui</option><option value="week">Cette semaine</option><option value="tag">Par tag…</option>
+            </select>
           </div>
         </form>
       </div>
+
       <ul id="journalList" class="list"></ul>
+
+      <!-- Édition modale -->
+      <dialog id="journalModal" class="modal glass">
+        <form method="dialog" class="stack">
+          <h3>Modifier la note</h3>
+          <input id="editJTitle" placeholder="Titre" />
+          <input id="editJTags"  placeholder="#tags" />
+          <textarea id="editJText" placeholder="Contenu…"></textarea>
+          <div class="row">
+            <button value="cancel" class="btn">Annuler</button>
+            <button id="saveJournalEdit" value="default" class="btn primary">Enregistrer</button>
+          </div>
+        </form>
+      </dialog>
     </section>
 
-    <!-- TÂCHES -->
+    <!-- TÂCHES (pro) -->
     <section id="tasks" class="tab" aria-label="Tâches">
       <h2 class="section-title">Tâches</h2>
+
       <div class="card glass">
         <form id="taskForm" class="row wrap">
-          <input id="taskTitle" placeholder="Nouvelle tâche">
-          <input id="taskDue" type="date" title="Échéance">
+          <input id="taskTitle" placeholder="Nouvelle tâche" required />
+          <input id="taskDue" type="date" title="Échéance" />
           <select id="taskProject" title="Projet">
             <option value="">Projet</option><option>Perso</option><option>Travail</option><option>Études</option>
+          </select>
+          <select id="taskPriority" title="Priorité">
+            <option value="moyenne">Priorité</option><option value="basse">Basse</option><option value="moyenne">Moyenne</option><option value="haute">Haute</option>
           </select>
           <button class="btn primary">Ajouter</button>
         </form>
       </div>
-      <div class="kanban">
-        <div class="kan-col"><h3>À faire</h3><ul id="todoList" class="list"></ul></div>
-        <div class="kan-col"><h3>En cours</h3><ul id="doingList" class="list"></ul></div>
-        <div class="kan-col"><h3>Fait</h3><ul id="doneList" class="list"></ul></div>
+
+      <div class="toolbar row wrap">
+        <input id="taskSearch" placeholder="Rechercher…" />
+        <select id="taskFilter">
+          <option value="">Tous statuts</option><option value="todo">À faire</option><option value="doing">En cours</option><option value="done">Fait</option>
+        </select>
+        <select id="taskSort">
+          <option value="created_desc">Récent</option><option value="due_asc">Échéance ↑</option><option value="priority_desc">Priorité</option>
+        </select>
+        <button id="taskClearDone" class="btn">Purger « Fait »</button>
+        <button id="taskBulkToday" class="btn">Planifier pour aujourd’hui</button>
+        <button id="taskExportCSV" class="btn">Exporter CSV</button>
       </div>
+
+      <div class="kanban">
+        <div class="kan-col"><h3>À faire</h3><ul id="todoList"  class="list can-drop"></ul></div>
+        <div class="kan-col"><h3>En cours</h3><ul id="doingList" class="list can-drop"></ul></div>
+        <div class="kan-col"><h3>Fait</h3><ul id="doneList"  class="list can-drop"></ul></div>
+      </div>
+
+      <!-- Modale d’édition tache -->
+      <dialog id="taskModal" class="modal glass">
+        <form method="dialog" class="stack">
+          <h3>Modifier la tâche</h3>
+          <input id="editTTitle" placeholder="Titre" />
+          <input id="editTDue" type="date" />
+          <select id="editTProject">
+            <option value="">Projet</option><option>Perso</option><option>Travail</option><option>Études</option>
+          </select>
+          <select id="editTPriority">
+            <option value="basse">Basse</option><option value="moyenne" selected>Moyenne</option><option value="haute">Haute</option>
+          </select>
+          <div class="row">
+            <button value="cancel" class="btn">Annuler</button>
+            <button id="saveTaskEdit" value="default" class="btn primary">Enregistrer</button>
+          </div>
+        </form>
+      </dialog>
     </section>
 
     <!-- HABITUDES -->
@@ -123,14 +249,18 @@
       <h2 class="section-title">Habitudes</h2>
       <div class="card glass">
         <form id="habitForm" class="row">
-          <input id="habitName" placeholder="Nom de l’habitude">
+          <input id="habitName" placeholder="Nom de l’habitude" />
           <button class="btn primary">Ajouter</button>
         </form>
+      </div>
+      <div class="row wrap">
+        <div class="chip">Aujourd’hui : <b id="habitTodayCount">0</b></div>
+        <div class="chip">Streak max : <b id="habitMaxStreak">0</b></div>
       </div>
       <ul id="habitList" class="list grid"></ul>
     </section>
 
-    <!-- FOCUS / POMODORO -->
+    <!-- FOCUS -->
     <section id="focus" class="tab" aria-label="Focus">
       <h2 class="section-title">Focus</h2>
       <div class="focus-panel glass">
@@ -149,7 +279,7 @@
       <h2 class="section-title">Santé</h2>
       <div class="card glass stack">
         <p>Importer Apple Santé (export.xml)</p>
-        <input id="healthFile" type="file" accept=".xml">
+        <input id="healthFile" type="file" accept=".xml" />
         <button id="parseHealth" class="btn primary">Analyser</button>
       </div>
       <div id="healthSummary" class="card glass"></div>
@@ -159,8 +289,8 @@
     <section id="goals" class="tab" aria-label="Objectifs">
       <h2 class="section-title">Objectifs</h2>
       <form id="goalForm" class="card glass row wrap">
-        <input id="goalTitle" placeholder="Objectif">
-        <input id="goalTarget" type="number" placeholder="Valeur cible">
+        <input id="goalTitle"  placeholder="Objectif" />
+        <input id="goalTarget" type="number" placeholder="Valeur cible" />
         <button class="btn primary">Ajouter</button>
       </form>
       <ul id="goalList" class="list grid"></ul>
@@ -170,8 +300,8 @@
     <section id="nutrition" class="tab" aria-label="Nutrition">
       <h2 class="section-title">Nutrition</h2>
       <form id="nutriForm" class="card glass row wrap">
-        <input id="nutriFood" placeholder="Aliment">
-        <input id="nutriKcal" type="number" placeholder="kcal">
+        <input id="nutriFood" placeholder="Aliment" />
+        <input id="nutriKcal" type="number" placeholder="kcal" />
         <button class="btn primary">Ajouter</button>
       </form>
       <ul id="nutriList" class="list"></ul>
@@ -193,8 +323,11 @@
     <section id="assistant" class="tab" aria-label="Assistant IA">
       <h2 class="section-title">Assistant IA</h2>
       <div class="card glass stack">
-        <textarea id="assistantInput" placeholder="Pose ta question…"></textarea>
-        <button id="askAssistant" class="btn primary">Envoyer</button>
+        <textarea id="assistantInput" placeholder="Pose ta question… (ex: combien de tâches restantes ?)"></textarea>
+        <div class="row">
+          <button id="askAssistant" class="btn primary">Envoyer</button>
+          <button id="assistantClear" class="btn">Effacer</button>
+        </div>
       </div>
       <div id="assistantChat" class="chat list"></div>
     </section>
@@ -202,15 +335,15 @@
     <!-- CALENDRIER -->
     <section id="calendar" class="tab" aria-label="Calendrier">
       <h2 class="section-title">Calendrier</h2>
-      <div id="calendarContainer" class="card glass"></div>
+      <div id="calendarContainer" class="card glass">À connecter (ics, CalDAV…)</div>
     </section>
 
-    <!-- RESSOURCES & CONNAISSANCES -->
+    <!-- RESSOURCES -->
     <section id="resources" class="tab" aria-label="Ressources">
-      <h2 class="section-title">Ressources</h2>
+      <h2 class="section-title">Ressources & Liens</h2>
       <form id="resourceForm" class="card glass row wrap">
-        <input id="resourceTitle" placeholder="Titre">
-        <input id="resourceLink" placeholder="Lien">
+        <input id="resourceTitle" placeholder="Titre" />
+        <input id="resourceLink"  placeholder="Lien" />
         <button class="btn primary">Ajouter</button>
       </form>
       <ul id="resourceList" class="list"></ul>
@@ -220,13 +353,13 @@
     <section id="files" class="tab" aria-label="Fichiers">
       <h2 class="section-title">Fichiers</h2>
       <div class="card glass row wrap">
-        <input id="fileUpload" type="file" multiple>
+        <input id="fileUpload" type="file" multiple />
         <button id="saveFile" class="btn primary">Uploader</button>
       </div>
       <ul id="fileList" class="list grid"></ul>
     </section>
 
-    <!-- CARTE / GÉO -->
+    <!-- CARTE -->
     <section id="map" class="tab" aria-label="Carte">
       <h2 class="section-title">Carte des souvenirs</h2>
       <div id="mapView" class="card glass map-placeholder">🗺️ Carte (à connecter)</div>
@@ -234,10 +367,11 @@
 
     <!-- RECHERCHE -->
     <section id="search" class="tab" aria-label="Recherche">
-      <h2 class="section-title">Recherche</h2>
-      <div class="card glass row">
-        <input id="searchInput" placeholder="Rechercher partout…">
+      <h2 class="section-title">Recherche globale</h2>
+      <div class="card glass row wrap">
+        <input id="searchInput" placeholder="Rechercher partout…" />
         <button id="searchBtn" class="btn">🔎</button>
+        <small class="muted">Cherche dans notes, tâches, habitudes…</small>
       </div>
       <div id="searchResults" class="list"></div>
     </section>
@@ -248,30 +382,40 @@
       <div class="grid-2">
         <div class="card glass stack">
           <h3>Apparence</h3>
-          <button id="themeLight" class="btn">Clair</button>
-          <button id="themeDark" class="btn">Sombre</button>
-          <button id="themeAmoled" class="btn">AMOLED</button>
+          <div class="row wrap">
+            <button id="themeLight" class="btn">Clair</button>
+            <button id="themeDark"  class="btn">Sombre</button>
+            <button id="themeAmoled"class="btn">AMOLED</button>
+          </div>
+          <label class="row"><input type="checkbox" id="reduceMotion" /> Réduire les animations</label>
         </div>
+
         <div class="card glass stack">
           <h3>Sauvegarde</h3>
-          <button id="exportData" class="btn">Exporter JSON</button>
-          <input id="importData" type="file" accept=".json">
+          <div class="row wrap">
+            <button id="exportData" class="btn">Exporter JSON</button>
+            <input id="importData" type="file" accept=".json" />
+          </div>
+          <small class="muted">Les données restent sur l’appareil (IndexedDB/LocalStorage).</small>
         </div>
+
         <div class="card glass stack">
           <h3>Confidentialité</h3>
-          <button id="lockApp" class="btn">Activer verrouillage (Face ID)</button>
+          <button id="lockApp"  class="btn">Activer verrouillage (Face ID)</button>
           <button id="panicMode" class="btn danger">Mode voyage</button>
         </div>
+
         <div class="card glass stack">
           <h3>Synchronisation</h3>
           <button id="syncNow" class="btn">Sync manuelle</button>
-          <small>Prévu: Supabase/iCloud, Siri Shortcuts, Notifications</small>
+          <small>À venir : Supabase, iCloud Drive, Raccourcis Siri, Notifications.</small>
         </div>
       </div>
     </section>
+
   </main>
 
-  <!-- Dock -->
+  <!-- DOCK -->
   <nav class="dock glass" role="navigation" aria-label="Navigation principale">
     <button data-tab="dashboard" class="active">🏠<span>Accueil</span></button>
     <button data-tab="journal">📓<span>Journal</span></button>
@@ -291,9 +435,25 @@
     <button data-tab="settings">⚙️<span>Réglages</span></button>
   </nav>
 
+  <!-- TEMPLATES (pour rendu rapide côté JS si besoin) -->
+  <template id="tpl-task">
+    <li class="card glass draggable">
+      <div class="row space-between">
+        <div class="task-title"></div>
+        <div class="row">
+          <small class="task-meta muted"></small>
+          <button class="btn mini edit">✏️</button>
+          <button class="btn mini danger del">🗑</button>
+        </div>
+      </div>
+    </li>
+  </template>
+
 </div>
 
-<!-- SW minimal (tu peux remplacer par ton sw.js avancé) -->
+<!-- JS -->
+<script src="db.js"></script>
+<script src="app.js"></script>
 <script>
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./sw.js').catch(console.error);
